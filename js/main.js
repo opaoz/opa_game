@@ -6,9 +6,11 @@ requirejs.config({
     }
 });
 
-requirejs(['modules/loader'], (loader) => {
+requirejs(['modules/loader', 'modules/register', 'lodash'], (loader, register, _) => {
     loader.subscribe({
-        progress: (v, max) => console.log(v, max),
+        progress: (v, max) => _.noop,
         done: (files) => console.log(files)
     });
+
+    console.log(register);
 });
