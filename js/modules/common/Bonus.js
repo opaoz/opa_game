@@ -13,12 +13,7 @@ define(['lodash', './GameObject', '../constants'], (_, GameObject, Constants) =>
     class Bonus extends GameObject {
         /**
          * Create alive entity
-         * @param {Object} gameObject
-         * @param {Number} gameObject.x
-         * @param {Number} gameObject.y
-         * @param {Number} gameObject.width
-         * @param {Number} gameObject.height
-         * @param {Image} gameObject.image
+         * @param {Object} gameObjectProps
          * @param {Object} stats
          * @param {Number} [stats.heal=0]
          * @param {Number} [stats.dDamage=0]
@@ -26,8 +21,9 @@ define(['lodash', './GameObject', '../constants'], (_, GameObject, Constants) =>
          * @param {Number} [stats.damage=0]
          * @param {Number} [stats.dMaxHealth=0]
          */
-        constructor({x, y, width, height, image}, {heal = 0, dDamage = 0, dSpeed = 0, damage = 0, dMaxHealth = 0}) {
-            super(x, y, width, height, image);
+        constructor(gameObjectProps, {heal = 0, dDamage = 0, dSpeed = 0, damage = 0, dMaxHealth = 0}) {
+            super(...gameObjectProps);
+            
             this._heal = _.min(heal, Constants.MAX_HEALTH_DIFF);
             this._dDamage = _.min(dDamage, Constants.MAX_DAMAGE_DIFF);
             this._damage = _.min(damage, Constants.MAX_HEALTH_DIFF);

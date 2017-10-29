@@ -5,7 +5,7 @@
  * @date 29/10/2017
  */
 
-define(['lodash', './GameObject', '../constants'], (_, GameObject, Constants) => {
+define(['lodash', './GameObject', '../constants', '../enums/Directions'], (_, GameObject, Constants, Directions) => {
     /**
      * @class AliveEntity
      * @description class to implement moveable creatures with live cycle
@@ -143,6 +143,10 @@ define(['lodash', './GameObject', '../constants'], (_, GameObject, Constants) =>
                 throw new Error(`must be a positive number, max ${Constants.MAX_DISARM_TIMEOUT}`);
             }
 
+            if (this.isDisarmed()) {
+                return false;
+            }
+
             this._isDisarmed = true;
             this._disarmedDamage = this._damage;
             this._damage = 0;
@@ -154,14 +158,68 @@ define(['lodash', './GameObject', '../constants'], (_, GameObject, Constants) =>
 
                 _.isFunction(cb) && cb(this);
             }, timeout * 1000);
+
+            return true;
         }
 
         /**
          * Kill the entity
          */
         death(killer) {
-            this._health = 0;
-            _.isFunction(this._onKill) && this._onKill(killer);
+            if (this.isAlive()) {
+                this._health = 0;
+                _.isFunction(this._onKill) && this._onKill(killer);
+            }
+        }
+
+        /**
+         * Move entity to `Constants.PIXELS_IN_STEP` in selected direction
+         * @param {Directions} direction
+         */
+        move(direction) {
+            const corners = GameObject.getCorners();
+            const step = Constants.PIXELS_IN_STEP;
+
+            subMove(direction);
+
+            /**
+             * Do single step (optimization in corners getting)
+             * @param subDirection
+             */
+            function subMove(subDirection) {
+                switch (subDirection) {
+                    case Directions.LEFT:
+                        this._x = this._x - step >= 0 ? this._x - step : 0;
+                        break;
+                    case Directions.RIGHT:
+                        this._x = this._x + this._width + step <= corners.width ? this._x + step : this._x;
+                        break;
+                    case Directions.TOP:
+                        this._y = this._y - step >= 0 ? this._y - step : 0;
+                        break;
+                    case Directions.BOTTOM:
+                        this._y = this._y + this._height + step <= corners.height ? this._y + step : this._y;
+                        break;
+                    case Directions.LEFT | Directions.TOP:
+                        subMove(Directions.LEFT);
+                        subMove(Directions.TOP);
+                        break;
+                    case Directions.LEFT | Directions.BOTTOM:
+                        subMove(Directions.LEFT);
+                        subMove(Directions.BOTTOM);
+                        break;
+                    case Directions.RIGHT | Directions.TOP:
+                        subMove(Directions.RIGHT);
+                        subMove(Directions.TOP);
+                        break;
+                    case Directions.RIGHT | Directions.BOTTOM:
+                        subMove(Directions.RIGHT);
+                        subMove(Directions.BOTTOM);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         /* Getters */
@@ -202,6 +260,10 @@ define(['lodash', './GameObject', '../constants'], (_, GameObject, Constants) =>
          */
         get imageSet() {
             return this._imageSet;
+        }
+
+        canMove(directino) {
+            //todo: implement
         }
     }
 

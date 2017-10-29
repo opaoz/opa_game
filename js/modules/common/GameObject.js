@@ -61,7 +61,29 @@ define(['lodash', '../constants'], (_, Constants) => {
 
             throw new Error('must be an Image');
         }
+
+        /**
+         * Set canvas corners
+         * @param {Number} [width=Constants.MIN_SCREEN_WIDTH]
+         * @param {Number} [height=Constants.MIN_SCREEN_HEIGHT]
+         */
+        static setCorners(width, height) {
+            GameObject.corners = {
+                width: _.max(width, GameObject.corners.width),
+                height: _.max(height, GameObject.corners.height)
+            };
+        }
+
+        /**
+         * Get canvas corners
+         * @return {{width: *, height: *}}
+         */
+        static getCorners() {
+            return {...GameObject.corners};
+        }
     }
+
+    GameObject.corners = {width: Constants.MIN_SCREEN_WIDTH, height: Constants.MIN_SCREEN_HEIGHT};
 
     return GameObject;
 });

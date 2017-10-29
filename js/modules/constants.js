@@ -20,6 +20,11 @@ define(() => {
 
     const DEFAULT_SIZE = 16;
 
+    const MIN_SCREEN_WIDTH = 600;
+    const MIN_SCREEN_HEIGHT = 800;
+
+    const PIXELS_IN_STEP = 1;
+
     return {
         MAX_HEALTH,
         MAX_SPEED,
@@ -30,6 +35,9 @@ define(() => {
         MAX_MAXHEALTH_DIFF,
         DEFAULT_SIZE,
         MAX_DISARM_TIMEOUT,
-        DEFAULT_DISARM_TIMEOUT
+        DEFAULT_DISARM_TIMEOUT,
+        MIN_SCREEN_WIDTH,
+        MIN_SCREEN_HEIGHT,
+        PIXELS_IN_STEP
     };
 });
